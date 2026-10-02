@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ennov 雲端 vs. 非雲端部署方案分析</title>
+<style>
+html{scroll-behavior:smooth}
+:root{
+  --primary:#163a5f; --secondary:#2d6a8a; --accent:#1f8a70;
+  --light:#f4f7fa; --border:#d8e0e8; --text:#263238; --muted:#607080;
+  --cloud:#eaf6ff; --onprem:#f2f0ff; --gold:#fff7df;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;color:var(--text);background:#eef2f6;line-height:1.75}
+.container{max-width:1180px;margin:auto;padding:28px 20px 60px}
+.hero{background:linear-gradient(135deg,#163a5f,#2d6a8a);color:#fff;border-radius:22px;padding:42px 40px;margin-bottom:24px;box-shadow:0 12px 35px #0002}
+.hero h1{margin:0 0 10px;font-size:clamp(28px,4vw,44px)}
+.hero p{margin:6px 0;opacity:.92}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:28px;margin:20px 0;box-shadow:0 5px 18px #0000000b}
+h2{color:var(--primary);font-size:25px;border-left:6px solid var(--secondary);padding-left:12px;margin-top:0}
+h3{color:var(--secondary);margin-bottom:8px}
+strong{color:#123e62}
+.note{background:var(--gold);border-left:5px solid #d6a72c;padding:16px 18px;border-radius:10px;margin:16px 0}
+.quote{background:#f5f8fb;border-left:5px solid var(--primary);padding:15px 18px;border-radius:8px;font-weight:600}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15px}
+th,td{border:1px solid var(--border);padding:11px 12px;text-align:left;vertical-align:top}
+th{background:#eaf0f5;color:var(--primary)}
+.cloud{background:var(--cloud)}
+.onprem{background:var(--onprem)}
+ul{padding-left:24px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.mini{padding:20px;border-radius:14px;background:var(--light);border:1px solid var(--border)}
+.diagram{display:flex;align-items:stretch;gap:14px;margin:20px 0}
+.diagram .side{flex:1;padding:24px;border-radius:16px;text-align:center}
+.diagram .center{flex:1.2;background:#163a5f;color:white;padding:24px;border-radius:16px;text-align:center}
+.footer{color:var(--muted);font-size:14px;text-align:center;margin-top:35px}
+a{color:#1769aa}
+
+/* ===== 動態目錄 ===== */
+.toc{
+  position:sticky;top:15px;z-index:100;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--border);border-radius:16px;
+  padding:18px 22px;margin:20px 0 28px;
+  box-shadow:0 6px 20px #00000014;
+}
+.toc-title{font-size:20px;font-weight:700;color:var(--primary);margin-bottom:12px}
+.toc-list{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 18px}
+.toc a{display:block;padding:8px 10px;color:#345;text-decoration:none;border-radius:8px;transition:all .2s ease}
+.toc a:hover,.toc a.active{background:#eaf6ff;color:#1769aa;font-weight:600}
+
+@media(max-width:800px){.grid,.grid3,.diagram{grid-template-columns:1fr;display:grid}.diagram .center{order:-1}table{font-size:13px;display:block;overflow-x:auto;white-space:normal}.hero{padding:30px 24px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<section class="hero">
+  <h1>Ennov 雲端 vs. 非雲端部署方案分析</h1>
+  <p>Cloud vs. On-Premises Deployment Strategy</p>
+  <p>從 IT、資安、GxP 合規、資料治理、TCO 與營運需求，評估最適合的 Ennov 部署模式。</p>
+</section>
+
+<nav class="toc" id="toc" aria-label="說明摘要快速導覽">
+  <div class="toc-title">📋 說明摘要｜快速導覽</div>
+  <div class="toc-list">
+    <a href="#section1">一、核心比較</a>
+    <a href="#section2">二、雲端方案的優勢</a>
+    <a href="#section3">三、雲端方案的考量</a>
+    <a href="#section4">四、On-Premises 的優勢</a>
+    <a href="#section5">五、On-Premises 的考量</a>
+    <a href="#section6">六、TCO 成本分析</a>
+    <a href="#section7">七、客戶部署決策矩陣</a>
+    <a href="#section8">八、VtR Ennov 銷售定位</a>
+    <a href="#section9">九、Ennov Deployment Strategy</a>
+    <a href="#section10">十、客戶評估流程</a>
+  </div>
+</nav>
+
+<section class="card" id="section1">
+<h2>一、Ennov 雲端 vs. 非雲端：核心比較</h2>
+<table>
+<thead><tr><th>比較項目</th><th class="cloud">☁️ Ennov Cloud 雲端</th><th class="onprem">🏢 Ennov On-Premises 非雲端</th></tr></thead>
+<tbody>
+<tr><td>建置方式</td><td>由 Ennov 雲端環境提供</td><td>部署於客戶自己的 IT 環境</td></tr>
+<tr><td>初期 IT 負擔</td><td><strong>低</strong></td><td><strong>較高</strong></td></tr>
+<tr><td>上線速度</td><td><strong>較快</strong></td><td>較慢，需 IT／基礎架構準備</td></tr>
+<tr><td>硬體需求</td><td>不需自行建置伺服器</td><td>客戶需準備伺服器／儲存／備份等</td></tr>
+<tr><td>系統維運</td><td>Ennov 負責較多</td><td>客戶 IT 負責較多</td></tr>
+<tr><td>資料控制</td><td>依雲端架構與合約管理</td><td><strong>資料可留在企業內部</strong></td></tr>
+<tr><td>資安策略</td><td>依 Ennov 雲端環境與企業安全政策</td><td>可依企業自己的資安政策控管</td></tr>
+<tr><td>客製化／整合</td><td>需考量雲端架構與介接政策</td><td><strong>企業 IT 控制度較高</strong></td></tr>
+<tr><td>多廠區／跨國</td><td><strong>非常適合</strong></td><td>可以，但 IT 架構較複雜</td></tr>
+<tr><td>遠端使用</td><td><strong>方便</strong></td><td>視企業 VPN／網路架構</td></tr>
+<tr><td>升級維護</td><td>負擔較低</td><td>客戶需投入 IT 資源</td></tr>
+<tr><td>長期 IT 人力</td><td><strong>較低</strong></td><td>較高</td></tr>
+<tr><td>資料主權</td><td>需確認 Hosting／合約條件</td><td><strong>企業掌控度較高</strong></td></tr>
+<tr><td>適合對象</td><td>快速導入、跨據點、IT 人力有限</td><td>高資安要求、既有內部 IT 架構、資料不希望離開企業</td></tr>
+</tbody>
+</table>
+<div class="note">Ennov 的部署模式是「選擇」，而不是功能高低之分。實際選擇應依企業 IT、資安、資料治理、GxP 與營運需求評估。</div>
+</section>
+
+<section class="card" id="section2">
+<h2>二、雲端方案的優勢</h2>
+<h3>1. 降低 IT 基礎建設負擔</h3>
+<p>Cloud 最大的價值不是單純「把軟體放到網路上」，而是企業不需要自己承擔完整的基礎架構維運。</p>
+<ul><li>Server</li><li>Storage</li><li>Backup</li><li>系統環境</li><li>基礎維運</li><li>升級</li></ul>
+<p>企業 IT 可因此減少大量工作，對中小型藥廠、Biotech、CDMO、醫材公司尤其具有吸引力。</p>
+
+<h3>2. 導入速度通常較快</h3>
+<p>Ennov Quality 可採用預先配置的 Quality Core Model，涵蓋常見的：</p>
+<ul><li>Deviation</li><li>CAPA</li><li>Change Control</li><li>Complaint</li><li>Audit</li><li>Impact Assessment</li></ul>
+<div class="quote">Cloud + Preconfigured Model → 降低 IT 準備與系統設定負擔 → 更容易規劃 Validation／導入 → 加速 Go-Live</div>
+
+<h3>3. 適合跨廠區、跨國組織</h3>
+<p><strong>台灣總公司 → 台灣廠 → 中國／日本／美國／歐洲據點</strong></p>
+<p>Cloud 架構可讓不同地點透過同一套 Ennov 平台工作，對 Quality、Regulatory、Clinical、PV 等跨部門流程尤其有價值。</p>
+</section>
+
+<section class="card" id="section3">
+<h2>三、雲端方案的考量</h2>
+<h3>1. 客戶對「資料放在哪裡」的疑慮</h3>
+<ul>
+<li>GMP 文件是否可以放在 Cloud？</li>
+<li>Audit Trail 如何管理？</li>
+<li>資料中心在哪個國家／區域？</li>
+<li>如果網路中斷怎麼辦？</li>
+<li>供應商是否可以存取客戶資料？</li>
+</ul>
+<p>因此 Cloud 評估不應只談「方便」，還應一起討論：</p>
+<div class="grid3">
+<div class="mini"><strong>Data Residency</strong><br>資料所在地與 Hosting 條件</div>
+<div class="mini"><strong>Security</strong><br>資安架構與存取控管</div>
+<div class="mini"><strong>Audit Trail</strong><br>稽核軌跡與合規要求</div>
+<div class="mini"><strong>Backup</strong><br>備份與復原機制</div>
+<div class="mini"><strong>Business Continuity</strong><br>營運持續與災難復原</div>
+<div class="mini"><strong>Access Control</strong><br>身分與權限管理</div>
+</div>
+
+<h3>2. 企業 IT 控制權相對降低</h3>
+<p>若大型藥廠已具備 Azure、AWS、Private Cloud、Data Center、Cybersecurity SOC、IAM、Backup、Disaster Recovery 等完整架構，IT 部門可能會進一步評估使用 Ennov Cloud 的必要性；此時 On-Premises 或 Hybrid 架構也可納入比較。</p>
+</section>
+
+<section class="card" id="section4">
+<h2>四、非雲端 On-Premises 的優勢</h2>
+<h3>1. 資料掌控度高</h3>
+<p>典型架構：</p>
+<div class="quote">公司內部 Data Center → Ennov → Document Repository → QMS → Audit Trail → Database</div>
+<p>資料可以留在企業自己的 IT 環境。這對具有嚴格資料治理與 IT Governance 的企業具有重要意義。</p>
+
+<h3>2. 適合已有完整 IT Governance 的企業</h3>
+<ul>
+<li>大型 Pharma</li><li>國際藥廠</li><li>大型醫療器材公司</li><li>高資安要求企業</li><li>具既有 Data Center／Private Cloud 的企業</li><li>對核心資料有高度內部控制需求的企業</li>
+</ul>
+<div class="quote">重點不是「不能用 Cloud」，而是企業已經有完整的 IT／Cybersecurity／Data Governance 架構，因此 On-Premises 可能更容易納入既有治理架構。</div>
+</section>
+
+<section class="card" id="section5">
+<h2>五、非雲端的考量</h2>
+<h3>IT 負擔較大</h3>
+<p>客戶需要納入整體規劃：</p>
+<div class="grid3">
+<div class="mini">Server</div><div class="mini">Database</div><div class="mini">Storage</div>
+<div class="mini">Backup</div><div class="mini">Disaster Recovery</div><div class="mini">Security</div>
+<div class="mini">Monitoring</div><div class="mini">Upgrade</div><div class="mini">Validation</div>
+</div>
+<p>因此不能只比較軟體授權價格；必須把 IT 基礎建設、人力、維護與升級等成本納入。</p>
+</section>
+
+<section class="card" id="section6">
+<h2>六、真正應該比較的是 TCO</h2>
+<p><strong>Total Cost of Ownership</strong></p>
+<div class="grid">
+<div class="mini cloud">
+<h3>☁️ Cloud</h3>
+<p>軟體／訂閱費<br>＋ Implementation<br>＋ Validation<br>＋ Integration<br>＋ Training</p>
+</div>
+<div class="mini onprem">
+<h3>🏢 On-Premises</h3>
+<p>軟體授權<br>＋ Implementation<br>＋ Validation<br>＋ Server<br>＋ Storage<br>＋ Backup<br>＋ Cybersecurity<br>＋ IT 人力<br>＋ Upgrade<br>＋ Disaster Recovery<br>＋ Maintenance</p>
+</div>
+</div>
+<div class="note"><strong>On-Premises 不一定比較便宜，Cloud 也不一定比較貴。</strong><br>真正應比較的是 5～10 年 TCO，而非只看初期 License Price。</div>
+</section>
+
+<section class="card" id="section7">
+<h2>七、Ennov 客戶部署決策矩陣</h2>
+<table>
+<thead><tr><th>客戶條件</th><th>優先評估方向</th></tr></thead>
+<tbody>
+<tr><td>IT 人力少</td><td>☁️ Cloud</td></tr>
+<tr><td>希望快速上線</td><td>☁️ Cloud</td></tr>
+<tr><td>多廠區</td><td>☁️ Cloud</td></tr>
+<tr><td>跨國企業</td><td>☁️ Cloud</td></tr>
+<tr><td>SaaS／Subscription 策略</td><td>☁️ Cloud</td></tr>
+<tr><td>不希望自己維護 Server</td><td>☁️ Cloud</td></tr>
+<tr><td>已有完整 Data Center</td><td>🏢 On-Premises</td></tr>
+<tr><td>高度資料控制需求</td><td>🏢 On-Premises</td></tr>
+<tr><td>企業有嚴格 IT Governance</td><td>🏢 On-Premises</td></tr>
+<tr><td>已有 Private Cloud</td><td>☁️／🏢 Hybrid 評估</td></tr>
+<tr><td>大型 Pharma</td><td>☁️／🏢 依 IT Policy 評估</td></tr>
+<tr><td>中小型 Pharma／Biotech</td><td>☁️ Cloud 可優先評估</td></tr>
+<tr><td>CDMO</td><td>☁️／🏢 視客戶資料隔離需求評估</td></tr>
+<tr><td>TFDA／FDA／GxP 環境</td><td><strong>兩者皆可，重點是 Validation + Compliance</strong></td></tr>
+</tbody>
+</table>
+<div class="note"><strong>重要：</strong>Cloud ≠ 不合規；On-Premises ≠ 自動合規。部署模式與 GxP／Compliance 能力應分開評估。</div>
+</section>
+
+<section class="card" id="section8">
+<h2>八、VtR 推廣 Ennov 的建議定位</h2>
+<p>不建議把銷售訊息簡化為「只賣 Cloud」。較適合的定位是：</p>
+<div class="diagram">
+<div class="side cloud"><h3>☁️ CLOUD</h3><p>快速導入<br>低 IT 負擔<br>跨廠區／跨國<br>彈性擴充</p></div>
+<div class="center"><h3 style="color:white">ENNOV</h3><p>Unified Compliance Platform</p><p>Quality • Regulatory • Clinical<br>Pharmacovigilance • Document • Training</p></div>
+<div class="side onprem"><h3>🏢 ON-PREMISES</h3><p>高度資料掌控<br>既有 IT 整合<br>企業內部部署<br>高度治理</p></div>
+</div>
+<p>核心概念：</p>
+<div class="quote">不是「Cloud Ennov」或「On-Premises Ennov」二選一，而是先決定客戶的 Compliance Solution，再決定最適合的 Deployment Model。</div>
+</section>
+
+<section class="card" id="section9">
+<h2>九、Ennov Deployment Strategy｜客戶簡報頁</h2>
+<h3>同一套 Ennov Solution，兩種部署模式</h3>
+<div class="diagram">
+<div class="side cloud"><h3>☁️ CLOUD</h3><p>快速導入<br>低 IT 負擔<br>多廠區／跨國<br>彈性擴充</p></div>
+<div class="center"><h3 style="color:white">ENNOV</h3><p>Unified Compliance Platform</p><hr><p>GxP / Compliance</p><p>Quality • Regulatory • Clinical<br>PV • Document • Training</p></div>
+<div class="side onprem"><h3>🏢 ON-PREMISES</h3><p>高度資料掌控<br>既有 IT 整合<br>企業內部部署<br>高度治理</p></div>
+</div>
+<h3>建議對客戶的核心訊息</h3>
+<div class="quote">「Ennov 不限制客戶選擇 Cloud 或 On-Premises；我們先依照企業的 GxP、資安、IT Governance、資料管理及營運需求，選擇最適合的部署模式。」</div>
+</section>
+
+<section class="card" id="section10">
+<h2>十、建議的客戶評估流程</h2>
+<div class="grid3">
+<div class="mini"><strong>01｜Compliance</strong><br>GxP、21 CFR Part 11、Audit Trail、Electronic Signature</div>
+<div class="mini"><strong>02｜IT Governance</strong><br>Cloud Policy、Data Center、IAM、Security</div>
+<div class="mini"><strong>03｜Data Governance</strong><br>Data Residency、資料隔離、備份、保存</div>
+<div class="mini"><strong>04｜Operation</strong><br>廠區、國家、使用者、跨部門流程</div>
+<div class="mini"><strong>05｜TCO</strong><br>5～10 年軟體、IT、人力、維護與升級成本</div>
+<div class="mini"><strong>06｜Deployment</strong><br>Cloud、On-Premises 或依需求評估 Hybrid</div>
+</div>
+</section>
+
+<section class="card">
+<h2>參考資料</h2>
+<ul>
+<li><a href="https://en.ennov.com/solutions/quality/docs/" target="_blank" rel="noopener">Ennov Software for Life — Quality Documents</a></li>
+<li><a href="https://en.ennov.com/solutions/quality/qms/" target="_blank" rel="noopener">Ennov Software for Life — Quality / QMS</a></li>
+<li><a href="https://en.ennov.com/solutions/" target="_blank" rel="noopener">Ennov Software for Life — Solutions</a></li>
+</ul>
+<p style="font-size:13px;color:#607080">註：實際 Cloud Hosting、資料所在地、資安控制、SLA、Validation 與合約條件，仍應以 Ennov 最新正式文件及個案合約為準。</p>
+</section>
+
+<div class="footer">Ennov Cloud vs. On-Premises Deployment Analysis｜VtR 業務提案素材</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const sections = document.querySelectorAll('section[id^="section"]');
+  const links = document.querySelectorAll('.toc a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(link => link.classList.remove('active'));
+        const activeLink = document.querySelector(
+          '.toc a[href="#' + entry.target.id + '"]'
+        );
+        if (activeLink) activeLink.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px' });
+
+  sections.forEach(section => observer.observe(section));
+
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
